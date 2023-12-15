@@ -1,0 +1,66 @@
+#include <iostream>
+
+int min, cost[100][100], parent[100], i, j, x, y, n;
+
+void find_min();
+int find_set(int i);
+void union_sets(int i, int j);
+
+int main() {
+    int count = 0, tot = 0, flag = 0;
+
+    std::cout << "Enter the number of vertices" << std::endl;
+    std::cin >> n;
+
+    std::cout << "Enter the cost matrix" << std::endl;
+    std::cout << "Enter 999 for No edges and self loops" << std::endl;
+
+    for (i = 1; i <= n; i++) {
+        for (j = 1; j <= n; j++) {
+            std::cin >> cost[i][j];
+        }
+        parent[i] = 0;
+    }
+
+    while (count != n - 1) {
+        find_min();
+        int set_x = find_set(x);
+        int set_y = find_set(y);
+
+        if (set_x != set_y) {
+            std::cout << "\n" << x << "----->" << y << "==" << cost[x][y] << std::endl;
+            count++;
+            tot += cost[x][y];
+            union_sets(set_x, set_y);
+        }
+
+        cost[x][y] = cost[y][x] = 999;
+    }
+
+    std::cout << "\nThe total cost of the minimum spanning tree = " << tot << std::endl;
+
+    return 0;
+}
+
+void find_min() {
+    min = 999;
+
+    for (i = 1; i <= n; i++)
+        for (j = 1; j <= n; j++)
+            if (cost[i][j] < min) {
+                min = cost[i][j];
+                x = i;
+                y = j;
+            }
+}
+
+int find_set(int i) {
+    while (parent[i] != 0) {
+        i = parent[i];
+    }
+    return i;
+}
+
+void union_sets(int i, int j) {
+    parent[j] = i;
+}
